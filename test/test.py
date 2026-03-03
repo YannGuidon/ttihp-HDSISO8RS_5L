@@ -48,7 +48,7 @@ async def test_project(dut):
     dut.ui_in.value = LFSR_EN + SHOW_LFSR + DIN_SEL # early selection
     # CLK_SEL=0, internal clock selected.
     await ClockCycles(dut.clk, 2)
-
+  
     dut.rst_n.value = 1            # wake up (from inside)
     await ClockCycles(dut.clk, 2)
     dut._log.info("Test project behavior")
@@ -93,7 +93,7 @@ async def test_project(dut):
     await ClockCycles(dut.clk, 10)
     if EnableAsserts:
       assert dut.uio_out.value == 4 # not 0 since one bit is inverted
-
+  
     dut._log.info(" LFSR OK !")
 
     dut.ui_in.value = DIN_SEL   # EXT_RST asserted, SHOW_LFSR off : restart everything
@@ -114,12 +114,10 @@ async def test_project(dut):
       if i >= 8:
         break
 
-    dut._log.info(" Johnson8 OK !")
-
     # Reset, re-enable LFSR
     dut.ui_in.value =  LFSR_EN + SHOW_LFSR + DIN_SEL
     await ClockCycles(dut.clk, 2)
     dut.ui_in.value =  LFSR_EN + SHOW_LFSR + DIN_SEL + EXT_RST
     await ClockCycles(dut.clk, 10000) # let it run for a while to see the LFSR output from the SIO
 
-    dut._log.info(" OK !")
+    dut._log.info(" Johnson8 OK !")
