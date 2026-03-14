@@ -1,12 +1,17 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
 
-# Tiny Tapeout Project: HDSISO8MUX
+- [Read the documentation for this project](docs/info.md)
+- This project is submitted to the Tiny Tapeout iHP26a run in March 2026
+
+# Tiny Tapeout Project: HDSISO8RS
 
 This is a prototype of a shift register that explores how to store data more densely than classic DFFs could, using the specific IHP CMOS PDK. The gate sg13g2_mux2_1 is not accepted by the synthesiser, this version uses a pair of sg13g2_a21oi_1, another tile/project https://github.com/ygdes/ttihp-HDSISO8 implements the exact same logic using the 50% larger sg13g2_dlhq_1 cell for comparison.
 
+Relevant stat: latches, cycles of delay, surface fill, speed (to be continued)
+
 SISO means Serial-In, Serial-Out, so it's not RAM since access is not random, but this non-randomness allows some clever tricks that optimise size, speed and power (static & dynamic) by eliminating the single general clock network. This implementation expects half the clock frequency and 1/4th clock load per cycle, for an effective 8× power reduction.
 
-A complex synchronous-to-asynchronous-to-synchronous interface is needed to operate glitch-free, and apart from the small controller's overhead, this allows almost arbitrary depth at ~2× density. Expect P&R mayhem though because I can't do the manual layout. Indeed it's messy.
+A complex synchronous-to-asynchronous-to-synchronous interface is needed to operate glitch-free, and apart from the small controller's overhead, this allows almost arbitrary depth at ~2× density of DFF. Expect P&R mayhem though because I can't do the manual layout. Yet. Actually it's messy.
 
 The scalability comes from modularity: one IO block controls as many "tranches" as you like, which can be chained. Tranches come in sizes of 16, 64, 256 cells, each holding 12, 48 and 192 effective data bits. Here, a depth of 512 bits requires 682 latches, assembling tranches of all sizes.
 
