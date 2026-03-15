@@ -98,7 +98,7 @@ endmodule
 //.................................................................................
 
 // Adds 32 latches, 16*2(*3/4) = 24 cycles, + 3DFF => 27 cycles
-// but now working as expected (yet)
+// The "better" version adds only 20 cycles => 23 cycles of delay
 module siso_demux_mux_rs(
     input  wire       RESET,
     input  wire       CLK,
@@ -123,7 +123,6 @@ module siso_demux_mux_rs(
   wire Even_odd, // FO3
     DevenN, DoddN, Deven, Dodd; // FO5
 
-  wire [3:0] Last_Unused;
   wire [3:0] te1, te2, te3, te1N, te2N, te3N;
   wire [3:0] to1, to2, to3, to1N, to2N, to3N;
   wire [3:0] exit_even, exit_odd;
@@ -148,7 +147,6 @@ module siso_demux_mux_rs(
   siso_slice4_rs_pos slice1o(.siso_in({to1[3], to1[2], Dodd,   to1[0]}), .siso_in_N({to1N[3], to1N[2], DoddN,   to1N[0]}), .siso_out(to2),             .siso_out_N(to2N),              .latch(Latch_odd[2]));
   siso_slice4_rs_pos slice2o(.siso_in({to2[3], Dodd,   to2[1], to2[0]}), .siso_in_N({to2N[3], DoddN,   to2N[1], to2N[0]}), .siso_out(to3),             .siso_out_N(to3N),              .latch(Latch_odd[1]));
   siso_slice4_rs_pos slice3o(.siso_in({Dodd,   to3[2], to3[1], to3[0]}), .siso_in_N({DoddN,   to3N[2], to3N[1], to3N[0]}), .siso_out(siso_first_odd),  .siso_out_N(siso_first_odd_N),  .latch(Latch_odd[0]));
-
 
 // Re-multiplexing
 
