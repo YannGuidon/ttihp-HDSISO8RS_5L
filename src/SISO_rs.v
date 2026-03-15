@@ -120,7 +120,8 @@ module siso_demux_mux_dl(
     output wire       Dout
 );
 
-  wire Even_odd, Deven, Dodd, DevenN, DoddN, FbEven, FbOdd;
+  wire Even_odd, DevenN, DoddN, FbEven, FbOdd;
+//  wire Deven, Dodd;
 //  wire [3:0] LEneg, LOneg;
   wire [3:0] Last_Unused;
   wire [3:0] te1, te2, te3, te1N, te2N, te3N;
@@ -138,20 +139,19 @@ module siso_demux_mux_dl(
   (* keep *) sg13g2_sdfrbp_1 sync_Dodd (.Q(FbOdd),   .Q_N(DoddN ), .D(FbOdd), .SCD(Din  ),  .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
 
 // Boost data pour les triangles d'entrée
-  (* keep *) sg13g2_inv_4  Amp_evenN(.Y(Deven), .A(DevenN));
-  (* keep *) sg13g2_inv_4  Amp_oddN (.Y(Dodd),  .A(DoddN));
+//  (* keep *) sg13g2_inv_4  Amp_evenN(.Y(Deven), .A(DevenN));
+//  (* keep *) sg13g2_inv_4  Amp_oddN (.Y(Dodd),  .A(DoddN));
 
 // Le gros du délai : les 2 triangles dans un carré 4×4 chacun (odd+even)
-// soit 2 copies modifiées de siso_tranche4x4_dl_neg
-  siso_slice4_rs_pos slice0e(.siso_in({siso_last_even[3:1], Deven}),     .siso_in_N({siso_last_even_N[3:1], Deven}),     .siso_out(te1),             .siso_out_N(te1N),              .latch(Latch_even[3]));
-  siso_slice4_rs_pos slice1e(.siso_in({te1[3], te1[2], Deven,  te1[0]}), .siso_in_N({te1[3], te1[2], Deven,  te1[0]}), .siso_out(te2),             .siso_out_N(te2N),              .latch(Latch_even[2]));
-  siso_slice4_rs_pos slice2e(.siso_in({te2[3], Deven,  te2[1], te2[0]}), .siso_in_N({te2[3], Deven,  te2[1], te2[0]}), .siso_out(te3),             .siso_out_N(te3N),              .latch(Latch_even[1]));
-  siso_slice4_rs_pos slice3e(.siso_in({Deven,  te3[2], te3[1], te3[0]}), .siso_in_N({Deven,  te3[2], te3[1], te3[0]}), .siso_out(siso_first_even), .siso_out_N(siso_first_even_N), .latch(Latch_even[0]));
+  siso_slice4_rs_pos slice0e(.siso_in({siso_last_even[3:1], FBeven}),     .siso_in_N({siso_last_even_N[3:1], DevenN}),      .siso_out(te1),             .siso_out_N(te1N),              .latch(Latch_even[3]));
+  siso_slice4_rs_pos slice1e(.siso_in({te1[3], te1[2], FBeven,  te1[0]}), .siso_in_N({te1N[3], te1N[2], DevenN,  te1N[0]}), .siso_out(te2),             .siso_out_N(te2N),              .latch(Latch_even[2]));
+  siso_slice4_rs_pos slice2e(.siso_in({te2[3], FBeven,  te2[1], te2[0]}), .siso_in_N({te2N[3], DevenN,  te2N[1], te2N[0]}), .siso_out(te3),             .siso_out_N(te3N),              .latch(Latch_even[1]));
+  siso_slice4_rs_pos slice3e(.siso_in({FBeven,  te3[2], te3[1], te3[0]}), .siso_in_N({DevenN,  te3N[2], te3N[1], te3N[0]}), .siso_out(siso_first_even), .siso_out_N(siso_first_even_N), .latch(Latch_even[0]));
 
-  siso_slice4_rs_pos slice0o(.siso_in({siso_last_odd [3:1], Dodd}),      .siso_in_N({siso_last_odd_N [3:1], Dodd}),      .siso_out(to1),             .siso_out_N(to1N),              .latch(Latch_odd[3]));
-  siso_slice4_rs_pos slice1o(.siso_in({to1[3], to1[2], Dodd,   to1[0]}), .siso_in_N({to1[3], to1[2], Dodd,   to1[0]}), .siso_out(to2),             .siso_out_N(to2N),              .latch(Latch_odd[2]));
-  siso_slice4_rs_pos slice2o(.siso_in({to2[3], Dodd,   to2[1], to2[0]}), .siso_in_N({to2[3], Dodd,   to2[1], to2[0]}), .siso_out(to3),             .siso_out_N(to3N),              .latch(Latch_odd[1]));
-  siso_slice4_rs_pos slice3o(.siso_in({Dodd,   to3[2], to3[1], to3[0]}), .siso_in_N({Dodd,   to3[2], to3[1], to3[0]}), .siso_out(siso_first_odd),  .siso_out_N(siso_first_odd_N),  .latch(Latch_odd[0]));
+  siso_slice4_rs_pos slice0o(.siso_in({siso_last_odd [3:1], FBodd}),      .siso_in_N({siso_last_odd_N [3:1], DoddN}),       .siso_out(to1),             .siso_out_N(to1N),              .latch(Latch_odd[3]));
+  siso_slice4_rs_pos slice1o(.siso_in({to1[3], to1[2], FBodd,   to1[0]}), .siso_in_N({to1N[3], to1N[2], DoddN,   to1N[0]}), .siso_out(to2),             .siso_out_N(to2N),              .latch(Latch_odd[2]));
+  siso_slice4_rs_pos slice2o(.siso_in({to2[3], FBodd,   to2[1], to2[0]}), .siso_in_N({to2N[3], DoddN,   to2N[1], to2N[0]}), .siso_out(to3),             .siso_out_N(to3N),              .latch(Latch_odd[1]));
+  siso_slice4_rs_pos slice3o(.siso_in({FBodd,   to3[2], to3[1], to3[0]}), .siso_in_N({DoddN,   to3N[2], to3N[1], to3N[0]}), .siso_out(siso_first_odd),  .siso_out_N(siso_first_odd_N),  .latch(Latch_odd[0]));
 
 
 // Re-multiplexing
@@ -162,6 +162,8 @@ module siso_demux_mux_dl(
   //  Latch_even[x]     3       2           1              0           some customisation maybe later.
 
   // note : ça fait 8 signaux "négatifs" inutilisés à gérer.
+  wire _unused; assign _unused= &{ te2N[2], te3N[3], siso_last_even_N[0], te1N[1],
+                                   to2N[2], to3N[3], siso_last_odd_N [0], to1N[1], 1'b0};
 
   (* keep *) sg13g2_a22oi_1  mux_comb0_even(.Y(doe1), .A1(Latch_even[0]), .A2(exit_even[0]), .B1(Latch_even[1]), .B2(exit_even[1]));
   (* keep *) sg13g2_a22oi_1  mux_comb1_even(.Y(doe2), .A1(Latch_even[2]), .A2(exit_even[2]), .B1(Latch_even[3]), .B2(exit_even[3]));
