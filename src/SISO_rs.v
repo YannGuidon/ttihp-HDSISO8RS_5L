@@ -46,8 +46,8 @@ module RSFF_pos(
     input  wire EN,
     output wire Q,
     output wire Q_N);
-  (* keep *) sg13g2_a21oi_1 rs_neg(.X(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
-  (* keep *) sg13g2_a21oi_1 rs_pos(.X(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
+  (* keep *) sg13g2_a21oi_1 rs_neg(.Y(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
+  (* keep *) sg13g2_a21oi_1 rs_pos(.Y(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
 endmodule
 
 module RSFF_neg(
@@ -158,8 +158,10 @@ module siso_demux_mux_rs(
   //  Latch_even[x]     3       2           1              0           some customisation maybe later.
 
   // note : ça fait 8 signaux "négatifs" inutilisés à gérer.
+  /* verilator lint_off UNUSEDSIGNAL */
   wire _unused; assign _unused= &{ te2N[2], te3N[3], siso_last_even_N[0], te1N[1],
                                    to2N[2], to3N[3], siso_last_odd_N [0], to1N[1], 1'b0};
+  /* verilator lint_on UNUSEDSIGNAL */
 
   (* keep *) sg13g2_a22oi_1  mux_comb0_even(.Y(doe1), .A1(Latch_even[0]), .A2(exit_even[0]), .B1(Latch_even[1]), .B2(exit_even[1]));
   (* keep *) sg13g2_a22oi_1  mux_comb1_even(.Y(doe2), .A1(Latch_even[2]), .A2(exit_even[2]), .B1(Latch_even[3]), .B2(exit_even[3]));
