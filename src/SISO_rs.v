@@ -121,9 +121,10 @@ module siso_demux_mux_dl(
 );
 
   wire Even_odd, Deven, Dodd, DevenN, DoddN, FbEven, FbOdd;
-  wire [3:0] LEneg, LOneg;
-  wire [3:0] te1, te2, te3;
-  wire [3:0] to1, to2, to3;
+//  wire [3:0] LEneg, LOneg;
+  wire [3:0] Last_Unused;
+  wire [3:0] te1, te2, te3, te1N, te2N, te3N;
+  wire [3:0] to1, to2, to3, to1N, to2N, to3N;
   wire [3:0] exit_even, exit_odd;
   wire Dout_even, Dout_odd, doe1, doe2, doo1, doo2;
 
@@ -142,33 +143,26 @@ module siso_demux_mux_dl(
 
 // Le gros du délai : les 2 triangles dans un carré 4×4 chacun (odd+even)
 // soit 2 copies modifiées de siso_tranche4x4_dl_neg
-//  Inverters_x4 BoostLatchEven(.Y(LEneg), .A(Latch_even));
-  siso_slice4_dl_neg slice0e(.siso_in({siso_last_even[3:1], Deven}),     .siso_out(te1),             .latch(Latch_even[3]));
-  siso_slice4_dl_neg slice1e(.siso_in({te1[3], te1[2], Deven,  te1[0]}), .siso_out(te2),             .latch(Latch_even[2]));
-  siso_slice4_dl_neg slice2e(.siso_in({te2[3], Deven,  te2[1], te2[0]}), .siso_out(te3),             .latch(Latch_even[1]));  // Manquent connexions négatives
-  siso_slice4_dl_neg slice3e(.siso_in({Deven,  te3[2], te3[1], te3[0]}), .siso_out(siso_first_even), .latch(Latch_even[0]));
+  siso_slice4_rs_pos slice0e(.siso_in({siso_last_even[3:1], Deven}),     .siso_in_N({siso_last_even_N[3:1], Deven}),     .siso_out(te1),             .siso_out_N(te1N),              .latch(Latch_even[3]));
+  siso_slice4_rs_pos slice1e(.siso_in({te1[3], te1[2], Deven,  te1[0]}), .siso_in_N({te1[3], te1[2], Deven,  te1[0]}), .siso_out(te2),             .siso_out_N(te2N),              .latch(Latch_even[2]));
+  siso_slice4_rs_pos slice2e(.siso_in({te2[3], Deven,  te2[1], te2[0]}), .siso_in_N({te2[3], Deven,  te2[1], te2[0]}), .siso_out(te3),             .siso_out_N(te3N),              .latch(Latch_even[1]));
+  siso_slice4_rs_pos slice3e(.siso_in({Deven,  te3[2], te3[1], te3[0]}), .siso_in_N({Deven,  te3[2], te3[1], te3[0]}), .siso_out(siso_first_even), .siso_out_N(siso_first_even_N), .latch(Latch_even[0]));
 
-//  Inverters_x4 BoostLatchOdd(.Y(LOneg), .A(Latch_odd));
-  siso_slice4_dl_neg slice0o(.siso_in({siso_last_odd [3:1], Dodd}),      .siso_out(to1),             .latch(Latch_odd[3]));
-  siso_slice4_dl_neg slice1o(.siso_in({to1[3], to1[2], Dodd,   to1[0]}), .siso_out(to2),             .latch(Latch_odd[2]));
-  siso_slice4_dl_neg slice2o(.siso_in({to2[3], Dodd,   to2[1], to2[0]}), .siso_out(to3),             .latch(Latch_odd[1]));
-  siso_slice4_dl_neg slice3o(.siso_in({Dodd,   to3[2], to3[1], to3[0]}), .siso_out(siso_first_odd),  .latch(Latch_odd[0]));
+  siso_slice4_rs_pos slice0o(.siso_in({siso_last_odd [3:1], Dodd}),      .siso_in_N({siso_last_odd_N [3:1], Dodd}),      .siso_out(to1),             .siso_out_N(to1N),              .latch(Latch_odd[3]));
+  siso_slice4_rs_pos slice1o(.siso_in({to1[3], to1[2], Dodd,   to1[0]}), .siso_in_N({to1[3], to1[2], Dodd,   to1[0]}), .siso_out(to2),             .siso_out_N(to2N),              .latch(Latch_odd[2]));
+  siso_slice4_rs_pos slice2o(.siso_in({to2[3], Dodd,   to2[1], to2[0]}), .siso_in_N({to2[3], Dodd,   to2[1], to2[0]}), .siso_out(to3),             .siso_out_N(to3N),              .latch(Latch_odd[1]));
+  siso_slice4_rs_pos slice3o(.siso_in({Dodd,   to3[2], to3[1], to3[0]}), .siso_in_N({Dodd,   to3[2], to3[1], to3[0]}), .siso_out(siso_first_odd),  .siso_out_N(siso_first_odd_N),  .latch(Latch_odd[0]));
+
 
 // Re-multiplexing
 
-/* version nominale - Sample&Hold maximal, 20 cycles */
+  // version nominale - Sample&Hold maximal, 20 cycles
   assign exit_even = {te2[2], te3[3], siso_last_even[0], te1[1]}; // This works more or less like a perm matrix
   assign exit_odd  = {to2[2], to3[3], siso_last_odd [0], to1[1]}; // It could get merged below but it might allow
   //  Latch_even[x]     3       2           1              0           some customisation maybe later.
 
-/* version 24 cycles
-  assign exit_even = {te3[3], siso_last_even[0], te1[1], te2[2]};
-  assign exit_odd  = {to3[3], siso_last_odd [0], to1[1], to2[2]};
+  // note : ça fait 8 signaux "négatifs" inutilisés à gérer.
 
-  20 cycles ? lower S&H
-  assign exit_even = {te1[1], te2[2], te3[3], siso_last_even[0]};
-  assign exit_odd  = {to1[1], to2[2], to3[3], siso_last_odd [0]};
-*/
   (* keep *) sg13g2_a22oi_1  mux_comb0_even(.Y(doe1), .A1(Latch_even[0]), .A2(exit_even[0]), .B1(Latch_even[1]), .B2(exit_even[1]));
   (* keep *) sg13g2_a22oi_1  mux_comb1_even(.Y(doe2), .A1(Latch_even[2]), .A2(exit_even[2]), .B1(Latch_even[3]), .B2(exit_even[3]));
   (* keep *) sg13g2_nand2_1  mux_nand2_even(.Y(Dout_even), .A(doe1), .B(doe2));
