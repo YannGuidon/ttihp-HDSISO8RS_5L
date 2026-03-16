@@ -108,8 +108,6 @@ async def test_project(dut):
 
       i = 0
       while (True):  # one last ride.
-        dut._log.info("n=" + str(n))
-        n=n+1
         await ClockCycles(dut.clk, 1)
         dut._log.info("cycle " + str(i) + " = " + str(dut.uio_out.value))
         if EnableAsserts:
