@@ -157,14 +157,16 @@ module tt_um_ygdes_hdsiso8_rs (
     .siso_last_odd_N(siso_end_odd_N),
     .Dout(D_OUT));
 
-// plugging 16*2 latches, or 24 bits
-  siso_tranche4x4_rs_pos siso16_1(
+  siso_tranche4x4x4x4_rs_pos siso256_1(
+  //  siso_tranche4x4_rs_pos siso16_1(
     .siso_in(siso_start_even),
     .siso_in_N(siso_start_even_N),
     .siso_out(siso_end_even),
     .siso_out_N(siso_end_even_N),
     .latch(latch4_even));
-  siso_tranche4x4_rs_pos siso16_2(
+
+  siso_tranche4x4x4x4_rs_pos siso256_2(
+  //  siso_tranche4x4_rs_pos siso16_2(
     .siso_in(siso_start_odd),
     .siso_in_N(siso_start_odd_N),
     .siso_out(siso_end_odd),
