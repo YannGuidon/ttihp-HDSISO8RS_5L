@@ -175,14 +175,14 @@ module tt_um_ygdes_hdsiso8_rs (
     .latch(latch4_odd));
 
 
-  siso_tranche4x4x4x4_rs_pos siso256_5(
+  siso_tranche4x4x4x4_rs_pos siso256_3(
     .siso_in   (chain1_even),
     .siso_in_N (chain1_even_N),
     .siso_out  (chain2_even),
     .siso_out_N(chain2_even_N),
     .latch(latch4_even));
 
-  siso_tranche4x4x4x4_rs_pos siso256_6(
+  siso_tranche4x4x4x4_rs_pos siso256_4(
     .siso_in   (chain1_odd),
     .siso_in_N (chain1_odd_N),
     .siso_out  (chain2_odd),
