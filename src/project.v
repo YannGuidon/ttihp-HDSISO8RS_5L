@@ -157,7 +157,75 @@ module tt_um_ygdes_hdsiso8_rs (
     .siso_last_odd_N   (siso_end_odd_N),
     .Dout(D_OUT));
 
+  // .................................................
+  // 8×64: 384 cycles+23 = 407 cycles
+  wire [3:0]
+    latch4_even_N,   latch4_odd_N
+    chain1_even,     chain1_even_N,     chain1_odd,     chain1_odd_N,
+    chain2_even,     chain2_even_N,     chain2_odd,     chain2_odd_N,
+    chain3_even,     chain3_even_N,     chain3_odd,     chain3_odd_N;
+  Inverters_x4 Amp(.Y(latch4_even_N), .A(latch4_even));
+  Inverters_x4 Amp(.Y(latch4_odd_N),  .A(latch4_odd));
+
+  siso_tranche4x4x4_rs_neg siso64_1(
+    .siso_in   (siso_start_even),
+    .siso_in_N (siso_start_even_N),
+    .siso_out  (chain1_even),
+    .siso_out_N(chain1_even_N),
+    .latch(latch4_even_N));
+
+  siso_tranche4x4x4_rs_neg siso64_2(
+    .siso_in   (siso_start_odd),
+    .siso_in_N (siso_start_odd_N),
+    .siso_out  (chain1_odd),
+    .siso_out_N(chain1_odd_N),
+    .latch(latch4_odd_N));
+
+  siso_tranche4x4x4_rs_neg siso64_3(
+    .siso_in   (chain1_even),
+    .siso_in_N (chain1_even_N),
+    .siso_out  (chain2_even),
+    .siso_out_N(chain2_even_N),
+    .latch(latch4_even_N));
+
+  siso_tranche4x4x4_rs_neg siso64_4(
+    .siso_in   (chain1_odd),
+    .siso_in_N (chain1_odd_N),
+    .siso_out  (chain2_odd),
+    .siso_out_N(chain2_odd_N),
+    .latch(latch4_odd_N));
+
+  siso_tranche4x4x4_rs_neg siso64_5(
+    .siso_in   (chain2_even),
+    .siso_in_N (chain2_even_N),
+    .siso_out  (chain3_even),
+    .siso_out_N(chain3_even_N),
+    .latch(latch4_even_N));
+
+  siso_tranche4x4x4_rs_neg siso64_6(
+    .siso_in   (chain2_odd),
+    .siso_in_N (chain2_odd_N),
+    .siso_out  (chain3_odd),
+    .siso_out_N(chain3_odd_N),
+    .latch(latch4_odd_N));
+    
+  siso_tranche4x4x4_rs_neg siso64_7(
+    .siso_in   (chain3_even),
+    .siso_in_N (chain3_even_N),
+    .siso_out  (siso_end_even),
+    .siso_out_N(siso_end_even_N),
+    .latch(latch4_even_N));
+
+  siso_tranche4x4x4_rs_neg siso64_8(
+    .siso_in   (chain3_odd),
+    .siso_in_N (chain3_odd_N),
+    .siso_out  (siso_end_odd),
+    .siso_out_N(siso_end_odd_N),
+    .latch(latch4_odd_N));
+
+/*
   // 2×256: 384 cycles+23 = 407 cycles
+    // Fails sims !!!
   siso_tranche4x4x4x4_rs_pos siso256_even(
     .siso_in   (siso_start_even),
     .siso_in_N (siso_start_even_N),
@@ -171,6 +239,7 @@ module tt_um_ygdes_hdsiso8_rs (
     .siso_out  (siso_end_odd),
     .siso_out_N(siso_end_odd_N),
     .latch(latch4_odd));
+*/
 
 /*
   // .................................................
