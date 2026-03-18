@@ -203,7 +203,39 @@ module tt_um_ygdes_hdsiso8_rs (
     .siso_last_odd_N   (siso_end_odd_N),
     .Dout(D_OUT));
 
+  wire [3:0] chain_even, chain_even_N, chain_odd, chain_odd_N;
+  SISO256pos siso256e_1(
+    .siso_start(siso_start_even),
+    .siso_start_N(siso_start_even_N),
+    .siso_end(chain_even),
+    .siso_end_N(chain_even_N),
+    .latch4(latch4_even)
+  );
+  SISO256pos siso256o_1(
+    .siso_start(siso_start_odd),
+    .siso_start_N(siso_start_odd_N),
+    .siso_end(chain_odd),
+    .siso_end_N(chain_odd_N),
+    .latch4(latch4_odd)
+  );
+  SISO256pos siso256e_2(
+    .siso_start(chain_even),
+    .siso_start_N(chain_even_N),
+    .siso_end(siso_end_even),
+    .siso_end_N(siso_end_even_N),
+    .latch4(latch4_even)
+  );
 
+  SISO256pos siso256o_2(
+    .siso_start(chain_odd),
+    .siso_start_N(chain_odd_N),
+    .siso_end(siso_end_odd),
+    .siso_end_N(siso_end_odd_N),
+    .latch4(latch4_odd)
+  );
+
+/*
+  512 cells : OK !
   SISO256pos siso256_1(
     .siso_start(siso_start_even),
     .siso_start_N(siso_start_even_N),
@@ -219,7 +251,7 @@ module tt_um_ygdes_hdsiso8_rs (
     .siso_end_N(siso_end_odd_N),
     .latch4(latch4_odd)
   );
-
+*/
 
 /*
   // .................................................
