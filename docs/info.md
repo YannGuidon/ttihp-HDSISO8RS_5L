@@ -1,6 +1,6 @@
 ## What is is
 
-This tile delays a bit's value by 768+23=791 cycles at speeds above 20MHz (according to the synthesiser, but that's conservative). It is an attempt to beat storage packing density, as well as a test architecture for asynchronous shift registers, not made out of the larger DFF cells. This version packs 1024+32 RS latches and a controller, filling 86% of the tile's surface. This is 36% more dense than the DLHQ version (in another tile), but the P&R tools choke and the speed drops by about 10x for no acceptable reason. One more compelling reason to use macros and manual place&route!
+This tile delays a bit's value by 768+23=791 cycles at speeds above 20MHz (according to the synthesiser, but that's conservative). It is an attempt to beat storage packing density, as well as a test architecture for asynchronous shift registers, not made out of the larger DFF cells. This version packs 1024+32 RS latches and a controller, filling 86% of the tile's surface. This is 36% more dense than the DLHQ version (in another tile), but the P&R tools choke and the speed drops by about 10x for no acceptable reason. One more compelling reason to use macros and manual place&route! This version is a port to the experimental IHP SG13CMOS5L PDK.
 
 
 ## How it works
