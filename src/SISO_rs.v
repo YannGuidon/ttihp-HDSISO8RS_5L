@@ -28,10 +28,10 @@
 module Inverters_x4 (
     input  wire [3:0] A,
     output wire [3:0] Y);
-  (* keep *) sg13g2_inv_4  Amp0(.Y(Y[0]), .A(A[0]));
-  (* keep *) sg13g2_inv_4  Amp1(.Y(Y[1]), .A(A[1]));
-  (* keep *) sg13g2_inv_4  Amp2(.Y(Y[2]), .A(A[2]));
-  (* keep *) sg13g2_inv_4  Amp3(.Y(Y[3]), .A(A[3]));
+  (* keep *) sg13cmos5l_inv_4  Amp0(.Y(Y[0]), .A(A[0]));
+  (* keep *) sg13cmos5l_inv_4  Amp1(.Y(Y[1]), .A(A[1]));
+  (* keep *) sg13cmos5l_inv_4  Amp2(.Y(Y[2]), .A(A[2]));
+  (* keep *) sg13cmos5l_inv_4  Amp3(.Y(Y[3]), .A(A[3]));
 endmodule
 
 //.................................................................................
@@ -43,8 +43,8 @@ module RSFF_pos(
     input  wire EN,
     output wire Q,
     output wire Q_N);
-  (* keep *) sg13g2_a21oi_1 rs_neg(.Y(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
-  (* keep *) sg13g2_a21oi_1 rs_pos(.Y(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
+  (* keep *) sg13cmos5l_a21oi_1 rs_neg(.Y(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
+  (* keep *) sg13cmos5l_a21oi_1 rs_pos(.Y(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
 endmodule
 
 module RSFF_neg(
@@ -53,8 +53,8 @@ module RSFF_neg(
     input  wire EN,
     output wire Q,
     output wire Q_N);
-  (* keep *) sg13g2_o21ai_1 rs_neg(.Y(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
-  (* keep *) sg13g2_o21ai_1 rs_pos(.Y(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
+  (* keep *) sg13cmos5l_o21ai_1 rs_neg(.Y(Q_N), .A1(EN), .A2(D  ), .B1(Q  ));
+  (* keep *) sg13cmos5l_o21ai_1 rs_pos(.Y(Q  ), .A1(EN), .A2(D_N), .B1(Q_N));
 endmodule
 
 //.................................................................................
@@ -68,11 +68,11 @@ module siso_slice4_rs_neg (        // Pulse low to latch
     input  wire       latch        // pass/keep signal
 );
   wire latch_n;
-  (* keep *) sg13g2_inv_4 Amp(.Y(latch_n), .A(latch));
-  (* keep *) RSFF_pos l0(.Q(siso_out[0]), .Q_N(siso_out_N[0]), .D(siso_in[0]), .D_N(siso_in_N[0]), .EN(latch_n));
-  (* keep *) RSFF_pos l1(.Q(siso_out[1]), .Q_N(siso_out_N[1]), .D(siso_in[1]), .D_N(siso_in_N[1]), .EN(latch_n));
-  (* keep *) RSFF_pos l2(.Q(siso_out[2]), .Q_N(siso_out_N[2]), .D(siso_in[2]), .D_N(siso_in_N[2]), .EN(latch_n));
-  (* keep *) RSFF_pos l3(.Q(siso_out[3]), .Q_N(siso_out_N[3]), .D(siso_in[3]), .D_N(siso_in_N[3]), .EN(latch_n));
+  (* keep *) sg13cmos5l_inv_4 Amp(.Y(latch_n), .A(latch));
+  RSFF_pos l0(.Q(siso_out[0]), .Q_N(siso_out_N[0]), .D(siso_in[0]), .D_N(siso_in_N[0]), .EN(latch_n));
+  RSFF_pos l1(.Q(siso_out[1]), .Q_N(siso_out_N[1]), .D(siso_in[1]), .D_N(siso_in_N[1]), .EN(latch_n));
+  RSFF_pos l2(.Q(siso_out[2]), .Q_N(siso_out_N[2]), .D(siso_in[2]), .D_N(siso_in_N[2]), .EN(latch_n));
+  RSFF_pos l3(.Q(siso_out[3]), .Q_N(siso_out_N[3]), .D(siso_in[3]), .D_N(siso_in_N[3]), .EN(latch_n));
 endmodule
 
 module siso_slice4_rs_pos (        // Pulse high to latch
@@ -83,11 +83,11 @@ module siso_slice4_rs_pos (        // Pulse high to latch
     input  wire       latch        // pass/keep signal
 );
   wire latch_n;
-  (* keep *) sg13g2_inv_4 Amp(.Y(latch_n), .A(latch));
-  (* keep *) RSFF_neg l0(.Q(siso_out[0]), .Q_N(siso_out_N[0]), .D(siso_in[0]), .D_N(siso_in_N[0]), .EN(latch_n));
-  (* keep *) RSFF_neg l1(.Q(siso_out[1]), .Q_N(siso_out_N[1]), .D(siso_in[1]), .D_N(siso_in_N[1]), .EN(latch_n));
-  (* keep *) RSFF_neg l2(.Q(siso_out[2]), .Q_N(siso_out_N[2]), .D(siso_in[2]), .D_N(siso_in_N[2]), .EN(latch_n));
-  (* keep *) RSFF_neg l3(.Q(siso_out[3]), .Q_N(siso_out_N[3]), .D(siso_in[3]), .D_N(siso_in_N[3]), .EN(latch_n));
+  (* keep *) sg13cmos5l_inv_4 Amp(.Y(latch_n), .A(latch));
+  RSFF_neg l0(.Q(siso_out[0]), .Q_N(siso_out_N[0]), .D(siso_in[0]), .D_N(siso_in_N[0]), .EN(latch_n));
+  RSFF_neg l1(.Q(siso_out[1]), .Q_N(siso_out_N[1]), .D(siso_in[1]), .D_N(siso_in_N[1]), .EN(latch_n));
+  RSFF_neg l2(.Q(siso_out[2]), .Q_N(siso_out_N[2]), .D(siso_in[2]), .D_N(siso_in_N[2]), .EN(latch_n));
+  RSFF_neg l3(.Q(siso_out[3]), .Q_N(siso_out_N[3]), .D(siso_in[3]), .D_N(siso_in_N[3]), .EN(latch_n));
 endmodule
 
 //.................................................................................
@@ -133,9 +133,9 @@ module siso_demux_mux_rs(
 
 // slowdown 2x at the input
 // NOR all bits of Latch_odd to dertermine parity:
-  (* keep *) sg13g2_nor4_1 Nor_EvenOdd(.Y(Even_odd), .A(Latch8[1]), .B(Latch8[3]), .C(Latch8[5]), .D(Latch8[7]));
-  (* keep *) sg13g2_sdfrbp_1 sync_Deven(.Q(Deven),  .Q_N(DevenN), .D(Din ),  .SCD(Deven), .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
-  (* keep *) sg13g2_sdfrbp_1 sync_Dodd (.Q(Dodd),   .Q_N(DoddN ), .D(Dodd), .SCD(Din  ),  .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
+  (* keep *) sg13cmos5l_nor4_1 Nor_EvenOdd(.Y(Even_odd), .A(Latch8[1]), .B(Latch8[3]), .C(Latch8[5]), .D(Latch8[7]));
+  (* keep *) sg13cmos5l_sdfrbp_1 sync_Deven(.Q(Deven),  .Q_N(DevenN), .D(Din ),  .SCD(Deven), .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
+  (* keep *) sg13cmos5l_sdfrbp_1 sync_Dodd (.Q(Dodd),   .Q_N(DoddN ), .D(Dodd), .SCD(Din  ),  .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
 
 // Le gros du délai : les 2 triangles dans un carré 4×4 chacun (odd+even)
   siso_slice4_rs_pos slice0e(.siso_in({siso_last_even[3:1], Deven}),     .siso_in_N({siso_last_even_N[3:1], DevenN}),      .siso_out(te1),             .siso_out_N(te1N),              .latch(Latch_even[3]));
@@ -161,16 +161,16 @@ module siso_demux_mux_rs(
                                    to2N[2], to3N[3], siso_last_odd_N [0], to1N[1], 1'b0};
   /* verilator lint_on UNUSEDSIGNAL */
 
-  (* keep *) sg13g2_a22oi_1  mux_comb0_even(.Y(doe1), .A1(Latch_even[0]), .A2(exit_even[0]), .B1(Latch_even[1]), .B2(exit_even[1]));
-  (* keep *) sg13g2_a22oi_1  mux_comb1_even(.Y(doe2), .A1(Latch_even[2]), .A2(exit_even[2]), .B1(Latch_even[3]), .B2(exit_even[3]));
-  (* keep *) sg13g2_nand2_1  mux_nand2_even(.Y(Dout_even), .A(doe1), .B(doe2));
+  (* keep *) sg13cmos5l_a22oi_1  mux_comb0_even(.Y(doe1), .A1(Latch_even[0]), .A2(exit_even[0]), .B1(Latch_even[1]), .B2(exit_even[1]));
+  (* keep *) sg13cmos5l_a22oi_1  mux_comb1_even(.Y(doe2), .A1(Latch_even[2]), .A2(exit_even[2]), .B1(Latch_even[3]), .B2(exit_even[3]));
+  (* keep *) sg13cmos5l_nand2_1  mux_nand2_even(.Y(Dout_even), .A(doe1), .B(doe2));
 
-  (* keep *) sg13g2_a22oi_1  mux_comb0_odd( .Y(doo1),  .A1(Latch_odd[0]), .A2(exit_odd[0]),  .B1(Latch_odd[1]), .B2(exit_odd[1]));
-  (* keep *) sg13g2_a22oi_1  mux_comb1_odd( .Y(doo2),  .A1(Latch_odd[2]), .A2(exit_odd[2]),  .B1(Latch_odd[3]), .B2(exit_odd[3]));
-  (* keep *) sg13g2_nand2_1  mux_nand2_odd( .Y(Dout_odd),  .A(doo1), .B(doo2));
+  (* keep *) sg13cmos5l_a22oi_1  mux_comb0_odd( .Y(doo1),  .A1(Latch_odd[0]), .A2(exit_odd[0]),  .B1(Latch_odd[1]), .B2(exit_odd[1]));
+  (* keep *) sg13cmos5l_a22oi_1  mux_comb1_odd( .Y(doo2),  .A1(Latch_odd[2]), .A2(exit_odd[2]),  .B1(Latch_odd[3]), .B2(exit_odd[3]));
+  (* keep *) sg13cmos5l_nand2_1  mux_nand2_odd( .Y(Dout_odd),  .A(doo1), .B(doo2));
 
 // output selection (odd/even)
-  (* keep *) sg13g2_sdfrbpq_1 sync_Dout(.Q(Dout), .D(Dout_odd), .SCD(Dout_even), .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
+  (* keep *) sg13cmos5l_sdfrbpq_1 sync_Dout(.Q(Dout), .D(Dout_odd), .SCD(Dout_even), .SCE(Even_odd), .RESET_B(RESET), .CLK(CLK));
 endmodule
 
 
